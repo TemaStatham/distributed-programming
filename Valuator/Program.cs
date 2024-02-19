@@ -12,7 +12,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        string connectionString = builder.Configuration.GetConnectionString("RedisConnection")!;
+        string? connectionString = builder.Configuration.GetSection("Redis").Value;
+        if (connectionString == null)
+        {
+            Console.WriteLine("Value cannot be null.(Parameter 'configuration')");
+            return;
+        }
+
         ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(connectionString);
 
         builder.Services.AddSingleton(redis);

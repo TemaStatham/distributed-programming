@@ -14,7 +14,7 @@ services:
 
     # Location of the Dockerfile
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
 
     # Set access ports for localhost on the left
