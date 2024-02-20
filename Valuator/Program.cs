@@ -19,9 +19,9 @@ public class Program
             return;
         }
 
-        ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(connectionString);
+        IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(connectionString);
 
-        builder.Services.AddSingleton(redis);
+        builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
         builder.Services.AddRazorPages();
 
         var app = builder.Build();

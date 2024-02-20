@@ -7,10 +7,10 @@ namespace Valuator.Pages;
 public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
-    private readonly ConnectionMultiplexer _redis;
+    private readonly IConnectionMultiplexer _redis;
     private readonly IDatabase _db;
 
-    public IndexModel(ILogger<IndexModel> logger, ConnectionMultiplexer redis)
+    public IndexModel(ILogger<IndexModel> logger, IConnectionMultiplexer redis)
     {
         _logger = logger;
         _redis = redis;
@@ -38,13 +38,11 @@ public class IndexModel : PageModel
         _db.StringSet(similarityKey, CalculateSimilarity(textKey, text));
 
         //TODO: сохранить в БД text по ключу textKey
-        _db.StringSet(textKey, text);
-
+        _db.StringSet(text, textKey);
 
         string rankKey = "RANK-" + id;
         //TODO: посчитать rank и сохранить в БД по ключу rankKey
         _db.StringSet(rankKey, CalculateRank(text));
-
 
         return Redirect($"summary?id={id}");
     }
@@ -62,20 +60,16 @@ public class IndexModel : PageModel
             }
         }
 
-        double rank = (double)nonAlphabeticCount / totalCharacterCount;
+        double rank = (double)nonAlphabeticCount / (double)totalCharacterCount;
 
         return rank;
     }
 
     private int CalculateSimilarity(string textKey, string text)
     {
-        string? _text = _db.StringGet(textKey);
-        if (_text == null)
-        {
-            return 0;
-        }
+        string? _textKey = _db.StringGet(text);
 
-        if (_text != text)
+        if (_textKey == null)
         {
             return 0;
         }

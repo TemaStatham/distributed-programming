@@ -19,8 +19,8 @@ services:
 
     # Set access ports for localhost on the left
     ports:
-      - "8001:8001"
-      - "8000:8000" 
+      - "8080:8080"
+      - "8081:8081" 
 
     # Configure a link to Redis
     links:
