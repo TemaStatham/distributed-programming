@@ -24,7 +24,7 @@ public class IndexModel : PageModel
 
     public IActionResult OnPost(string text)
     {
-        if (text == "")
+        if (string.IsNullOrEmpty(text))
         {
             return Redirect($"index");
         }
