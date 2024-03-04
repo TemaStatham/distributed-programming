@@ -30,7 +30,6 @@ services:
     # Pass it in as an Environmental Variable
     environment:
       - RedisConnection=redis_image
-      - command: redis-server --dir /data --save 60 1
 
   # The Redis Service, this label is required for the "Links" and Connection string
   redis_image:

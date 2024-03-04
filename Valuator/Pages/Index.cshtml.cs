@@ -34,15 +34,13 @@ public class IndexModel : PageModel
 
         string textKey = "TEXT-" + id;
         string similarityKey = "SIMILARITY-" + id;
-        //TODO: посчитать similarity и сохранить в БД по ключу similarityKey
-        _db.StringSet(similarityKey, CalculateSimilarity(textKey, text));
 
-        //TODO: сохранить в БД text по ключу textKey
+        _db.StringSet(similarityKey, CalculateSimilarity(textKey, text).ToString());
         _db.StringSet(text, textKey);
 
         string rankKey = "RANK-" + id;
-        //TODO: посчитать rank и сохранить в БД по ключу rankKey
-        _db.StringSet(rankKey, CalculateRank(text));
+
+        _db.StringSet(rankKey, CalculateRank(text).ToString());
 
         return Redirect($"summary?id={id}");
     }
@@ -65,7 +63,7 @@ public class IndexModel : PageModel
         return rank;
     }
 
-    private int CalculateSimilarity(string textKey, string text)
+    private double CalculateSimilarity(string textKey, string text)
     {
         string? _textKey = _db.StringGet(text);
 

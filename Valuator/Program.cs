@@ -19,13 +19,13 @@ public class Program
             Console.WriteLine("Value cannot be null.(Parameter 'configuration')");
             return;
         }
+
         ConfigurationOptions redisConfiguration = new ConfigurationOptions();
         redisConfiguration.ConnectRetry = 16;
         redisConfiguration.ConnectTimeout = 5000;
         redisConfiguration.KeepAlive = 2;
         redisConfiguration.AbortOnConnectFail = false;
-        /*redisConfiguration.Ssl = true;
-        redisConfiguration.SslProtocols = SslProtocols.Tls12;*/
+
         redisConfiguration.EndPoints.Add(connectionString);
 
 
