@@ -28,7 +28,6 @@ public class Program
 
         redisConfiguration.EndPoints.Add(connectionString);
 
-
         IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(redisConfiguration);
 
         builder.Services.AddSingleton<IConnectionMultiplexer>(redis);

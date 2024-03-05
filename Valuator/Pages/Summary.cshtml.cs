@@ -12,7 +12,6 @@ public class SummaryModel : PageModel
 {
     private readonly ILogger<SummaryModel> _logger;
     private readonly IConnectionMultiplexer _redis;
-    // private readonly IDatabase _db;
     public SummaryModel(ILogger<SummaryModel> logger, IConnectionMultiplexer redis)
     {
         _logger = logger;
