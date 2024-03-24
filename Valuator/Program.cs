@@ -1,11 +1,6 @@
-using Microsoft.Extensions.Configuration;
-using NRedisStack;
-using NRedisStack.RedisStackCommands;
 using StackExchange.Redis;
-using System.Security.Authentication;
 
 namespace Valuator;
-
 
 public class Program
 {

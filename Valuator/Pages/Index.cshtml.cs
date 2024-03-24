@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using StackExchange.Redis;
+using NATS.Client;
+using System.Text;
 
 namespace Valuator.Pages;
 
@@ -9,7 +11,6 @@ public class IndexModel : PageModel
     private readonly ILogger<IndexModel> _logger;
     private readonly IConnectionMultiplexer _redis;
     private readonly IDatabase _db;
-
     public IndexModel(ILogger<IndexModel> logger, IConnectionMultiplexer redis)
     {
         _logger = logger;
@@ -38,30 +39,30 @@ public class IndexModel : PageModel
         _db.StringSet(similarityKey, CalculateSimilarity(textKey, text).ToString());
         _db.StringSet(text, textKey);
 
-        string rankKey = "RANK-" + id;
-
-        _db.StringSet(rankKey, CalculateRank(text).ToString());
+        SendToRankCalculate(id);
 
         return Redirect($"summary?id={id}");
     }
 
-    private static double CalculateRank(string text)
+    private static void SendToRankCalculate(string id)
     {
-        int nonAlphabeticCount = 0;
-        int totalCharacterCount = text.Length;
+        CancellationTokenSource cts = new CancellationTokenSource();
 
-        foreach (char c in text)
-        {
-            if (!char.IsLetter(c))
-            {
-                nonAlphabeticCount++;
-            }
-        }
+        ConnectionFactory cf = new ConnectionFactory();
+        Options opts = ConnectionFactory.GetDefaultOptions();
+        opts.Url = "nats://localhost:4444";
 
-        double rank = (double)nonAlphabeticCount / (double)totalCharacterCount;
+        IConnection c = cf.CreateConnection(opts);
 
-        return rank;
+        c.Publish("rank", Encoding.UTF8.GetBytes(id));
+
+        c.Drain();
+
+        c.Close();
+
+        cts.Cancel();
     }
+
 
     private double CalculateSimilarity(string textKey, string text)
     {
